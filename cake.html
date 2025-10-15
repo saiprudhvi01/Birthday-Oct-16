@@ -8,7 +8,480 @@
     <style>
         :root {
             --neon-pink: #ff00ff;
+            --neon-blue: #00ffff;<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Cake Celebration!</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
             --neon-blue: #00ffff;
+            --neon-purple: #bc13fe;
+            --space-black: #0a0a1a;
+            --star-white: rgba(255, 255, 255, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, var(--space-black) 60%, #2a0a4a);
+            font-family: 'Arial', sans-serif;
+            /* Prevent horizontal overflow on mobile */
+            overflow-x: hidden; 
+            position: relative;
+        }
+
+        /* --- Background Elements --- */
+        .stars {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: var(--star-white);
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* --- Main Content --- */
+        .heading {
+            font-size: 4rem; /* Will be adjusted for mobile below */
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: titleFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px var(--neon-purple));
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ** MOBILE FIX: Use vw (viewport width) for scalable size ** */
+        .cake-container {
+            position: relative;
+            width: 80vw; /* Scales with screen size */
+            max-width: 350px; /* Max size for large screens */
+            height: 80vw;
+            max-height: 350px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 30px rgba(255, 113, 182, 0.5));
+            /* Fix aspect ratio for container when height is dependent on width */
+            aspect-ratio: 1 / 1; 
+        }
+
+        .cake-container:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .cake {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .layer {
+            position: absolute;
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px var(--neon-pink),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        /* Cake layers use calc() based on original proportions (Total height was 270px) */
+        .layer-1 {
+            height: calc(100px / 270 * 100%);
+            bottom: 0;
+            background: linear-gradient(45deg, #ff00ff, #bc13fe);
+            z-index: 3;
+        }
+
+        .layer-2 {
+            height: calc(90px / 270 * 100%);
+            bottom: calc(100px / 270 * 100%); /* Stacks on top of layer-1 */
+            width: 85%;
+            left: 7.5%;
+            background: linear-gradient(45deg, #bc13fe, #8a2be2);
+            z-index: 2;
+        }
+
+        .layer-3 {
+            height: calc(80px / 270 * 100%);
+            bottom: calc(100px / 270 * 100% + 90px / 270 * 100%); /* Stacks on top of layer-1 & 2 */
+            width: 70%;
+            left: 15%;
+            background: linear-gradient(45deg, #8a2be2, #4b0082);
+            z-index: 1;
+        }
+        
+        /* ** MOBILE FIX: Use percentages/relative units for frosting/candles ** */
+        .frosting {
+            position: absolute;
+            width: 8%; /* Relative to the layer's width */
+            height: 43.75%; /* Relative to the layer's height, 35px is 43.75% of 80px layer-3 height */
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            top: -18.75%; /* -15px is -18.75% of 80px layer-3 height (used as base here) */
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .candle {
+            position: absolute;
+            width: 10%; /* Relative to layer-3 width (70%) */
+            height: 100%; /* Relative to layer-3 height (80px) */
+            background: linear-gradient(to right, #fff, #ffd1e3);
+            top: -100%; /* -80px is 100% of layer-3's height */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            z-index: 10;
+            filter: drop-shadow(0 0 10px white);
+        }
+
+        .flame {
+            position: absolute;
+            width: 100%; /* Relative to candle width */
+            height: 50%; /* 40px relative to 80px candle height */
+            background: linear-gradient(to bottom, #ff9d00, #ff5e00);
+            border-radius: 50% 50% 20% 20%;
+            top: -43.75%; /* -35px relative to 80px candle height */
+            animation: flameFloat 0.8s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px #ff9d00);
+        }
+
+        /* --- Button & Neon Border --- */
+        .next-page-button {
+            position: fixed;
+            bottom: 40px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 25px var(--neon-pink),
+                0 0 50px var(--neon-blue);
+            z-index: 1000;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .next-page-button.show {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            /* Placeholder for buttonPulse animation if defined */
+        }
+
+        .neon-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--neon-pink);
+            border-radius: 15px;
+            box-shadow: 
+                inset 0 0 15px var(--neon-pink),
+                0 0 30px var(--neon-pink);
+            animation: borderPulse 2s infinite;
+        }
+        
+        /* Message box styles for better mobile readability */
+        .birthday-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 1000;
+            max-width: 90vw; /* Mobile safety */
+            box-shadow: 0 0 30px var(--neon-pink);
+        }
+
+        /* ---------------------------------------------------- */
+        /* ** MEDIA QUERY FOR MOBILE DEVICES ** */
+        /* ---------------------------------------------------- */
+        @media (max-width: 600px) {
+            
+            .heading {
+                font-size: 2.5rem; /* Smaller heading on small screens */
+                margin-top: 5vh;
+                margin-bottom: 1rem;
+            }
+
+            .cake-container {
+                width: 85vw; 
+                height: 85vw;
+                max-width: 85vw;
+                max-height: 85vw;
+            }
+
+            .next-page-button {
+                bottom: 20px;
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            /* Smaller font for the typing message on small screens */
+            .birthday-message {
+                font-size: 1.2rem !important;
+                padding: 15px !important;
+            }
+            
+            .birthday-message button {
+                font-size: 1rem !important;
+                padding: 8px 15px !important;
+            }
+
+            /* Adjust inline styles to scale relative to the smaller cake-container */
+            /* Using percentages or vh/vw might be safer if the original inline px values 
+               were for fine-tuning. We'll replace the inline px with more robust percentage/relative values in the JS/HTML if possible, 
+               but for the current structure, we'll keep the inline for simplicity.
+               The cake and candle structure is now relative, so simple fixed pixel overrides aren't required.
+            */
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <h1 class="heading">Magical Cake Time! ✨</h1>
+    <div class="cake-container">
+        <div class="cake">
+            <div class="neon-border"></div>
+            <div class="layer layer-1">
+                <div class="frosting"></div>
+                <div class="frosting" style="left: 14%;"></div> 
+                <div class="frosting" style="right: 14%;"></div>
+            </div>
+            <div class="layer layer-2">
+                <div class="frosting"></div>
+                <div class="frosting" style="left: 12%;"></div>
+                <div class="frosting" style="right: 12%;"></div>
+            </div>
+            <div class="layer layer-3">
+                <div class="frosting"></div>
+                <div class="frosting" style="left: 10%;"></div>
+                <div class="frosting" style="right: 10%;"></div>
+                <div class="candle">
+                    <div class="flame"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="next-page-button">Begin Magic →</button>
+
+    <script>
+        // Create stars background
+        function createStars() {
+            const container = document.querySelector('.stars');
+            const isMobile = window.innerWidth <= 600;
+            const numStars = isMobile ? 100 : 200; 
+            const starSize = isMobile ? 2 : 3;
+
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = `${Math.random() * starSize}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(star);
+            }
+        }
+        createStars();
+
+        // Create floating particles
+        function createParticles() {
+            const flame = document.querySelector('.flame');
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'glow-particle';
+                // Adjust left offset slightly to match candle's relative size
+                particle.style.left = `${Math.random() * 8 - 4}px`; 
+                flame.appendChild(particle);
+                setTimeout(() => particle.remove(), 3000);
+            }, 300);
+        }
+        createParticles();
+
+        // Create floating love emojis immediately
+        function createLoveEmojis() {
+            const isMobile = window.innerWidth <= 600;
+            const numEmojis = isMobile ? 10 : 20;
+            const emojiSize = isMobile ? '1.5rem' : '2rem';
+            
+            for (let i = 0; i < numEmojis; i++) {
+                const emoji = document.createElement('div');
+                emoji.innerHTML = '❤️';
+                emoji.style.position = 'absolute';
+                emoji.style.fontSize = emojiSize;
+                emoji.style.left = `${Math.random() * 100}%`;
+                emoji.style.top = `${Math.random() * 100}%`;
+                emoji.style.zIndex = '1';
+                emoji.style.animation = `loveFloat ${Math.random() * 3 + 2}s linear infinite`;
+                document.body.appendChild(emoji);
+                setTimeout(() => emoji.remove(), 5000);
+            }
+        }
+        createLoveEmojis();
+
+
+        // Main celebration logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const cake = document.querySelector('.cake-container');
+            const nextButton = document.querySelector('.next-page-button');
+            let celebrationStarted = false;
+
+            // Cake click event
+            cake.addEventListener('click', () => {
+                if(celebrationStarted) return;
+                celebrationStarted = true;
+
+                // Simple animation on click
+                gsap.to(cake, { 
+                    y: -10, 
+                    duration: 0.3, 
+                    ease: "power1.out", 
+                    yoyo: true, 
+                    repeat: 1 
+                });
+
+                // Show button after delay
+                setTimeout(() => {
+                    nextButton.classList.add('show');
+                }, 2000);
+            });
+
+            // Button click handler
+            nextButton.addEventListener('click', () => {
+                let message = document.querySelector('.birthday-message');
+                if (!message) {
+                    message = document.createElement('div');
+                    // Add the class for the new responsive styles
+                    message.className = 'birthday-message';
+                    
+                    // The CSS handles most of the responsiveness now.
+                    document.body.appendChild(message);
+
+                    // Message array for typing effect
+                    const messages = [
+                        "N - Never a dull moment with you! 🎉",
+                        "I - Incredibly awesome, that's you! 😎",
+                        "K - Kind-hearted and super cool! ❤️",
+                        "I - Intelligent and inspiring! ✨",
+                        "T - Terrific in every way! 🌟",
+                        "H - Hilarious and full of joy! 😂",
+                        "A - Absolutely amazing friend! 🎊",
+                        "\n\nHappy Birthday Nikitha! 🎂🎈"
+                    ];
+
+                    let currentMessage = 0;
+                    let currentChar = 0;
+                    let typingSpeed = 50; 
+                    
+                    function typeWriter() {
+                        if (currentMessage < messages.length) {
+                            if (currentChar === 0 && currentMessage > 0) {
+                                message.innerHTML += '<br><br>';
+                            }
+                            
+                            if (currentChar < messages[currentMessage].length) {
+                                message.innerHTML += messages[currentMessage].charAt(currentChar);
+                                currentChar++;
+                                setTimeout(typeWriter, typingSpeed);
+                            } else {
+                                currentMessage++;
+                                currentChar = 0;
+                                if (currentMessage < messages.length) {
+                                    setTimeout(typeWriter, 1000); 
+                                } else {
+                                    // Add the final button
+                                    const continueBtn = document.createElement('button');
+                                    continueBtn.textContent = 'Continue the Magic! 🎇';
+                                    
+                                    // Button styles (Will be overridden by .birthday-message button in CSS)
+                                    continueBtn.style.marginTop = '20px';
+                                    continueBtn.style.padding = '10px 20px';
+                                    continueBtn.style.borderRadius = '20px';
+                                    continueBtn.style.background = 'linear-gradient(45deg, var(--neon-pink), var(--neon-blue))';
+                                    continueBtn.style.color = 'white';
+                                    continueBtn.style.border = 'none';
+                                    continueBtn.style.cursor = 'pointer';
+                                    continueBtn.style.fontSize = '1.2rem';
+                                    
+                                    continueBtn.onclick = () => window.location.href = 'Final.html';
+                                    message.appendChild(document.createElement('br'));
+                                    message.appendChild(document.createElement('br'));
+                                    message.appendChild(continueBtn);
+                                }
+                            }
+                        }
+                    }
+                    
+                    typeWriter();
+                }
+            });
+        });
+
+        // Continue background music
+        if (sessionStorage.getItem('musicPlaying') === 'true') {
+            const audio = new Audio(encodeURI('[iSongs.info] 02 - Intro Of Nikki.mp3'));
+            audio.loop = true;
+            audio.volume = 0.5;
+            audio.muted = true;
+            audio.play().then(() => {
+                setTimeout(() => {
+                    audio.muted = false;
+                }, 1000);
+            }).catch(e => console.log('Music play failed:', e));
+        }
+    </script>
+</body>
+</html>
             --neon-purple: #bc13fe;
             --space-black: #0a0a1a;
             --star-white: rgba(255, 255, 255, 0.8);
