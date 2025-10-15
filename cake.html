@@ -53,7 +53,7 @@
         }
 
         .heading {
-            font-size: 4rem;
+            font-size: clamp(2rem, 8vw, 4rem);
             background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
             -webkit-background-clip: text;
             background-clip: text;
@@ -73,8 +73,8 @@
 
         .cake-container {
             position: relative;
-            width: 350px;
-            height: 350px;
+            width: clamp(250px, 70vw, 350px);
+            height: clamp(250px, 70vw, 350px);
             cursor: pointer;
             transition: transform 0.3s ease;
             filter: drop-shadow(0 0 30px rgba(255, 113, 182, 0.5));
@@ -186,8 +186,8 @@
         .next-page-button {
             position: fixed;
             bottom: 40px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
+            padding: clamp(10px, 3vw, 15px) clamp(20px, 5vw, 40px);
+            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
             background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
             border: none;
             border-radius: 30px;
@@ -232,17 +232,55 @@
 
 
 
- /* नया बटन CSS जोड़ें */
- .next-page-button.show {
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .heading {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+                margin-bottom: 1.5rem;
+            }
+
+            .cake-container {
+                width: clamp(200px, 60vw, 300px);
+                height: clamp(200px, 60vw, 300px);
+            }
+
+            .layer-1 { height: clamp(60px, 15vw, 100px); }
+            .layer-2 { height: clamp(50px, 12vw, 90px); width: clamp(60%, 70vw, 85%); left: clamp(5%, 7.5vw, 7.5%); }
+            .layer-3 { height: clamp(40px, 10vw, 80px); width: clamp(50%, 60vw, 70%); left: clamp(10%, 15vw, 15%); }
+
+            .next-page-button {
+                padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 25px);
+                font-size: clamp(0.7rem, 2vw, 0.9rem);
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .heading {
+                font-size: clamp(1.2rem, 5vw, 2rem);
+                margin-bottom: 1rem;
+            }
+
+            .cake-container {
+                width: clamp(180px, 50vw, 250px);
+                height: clamp(180px, 50vw, 250px);
+            }
+
+            .layer-1 { height: clamp(50px, 12vw, 80px); }
+            .layer-2 { height: clamp(40px, 10vw, 70px); width: 80%; left: 10%; }
+            .layer-3 { height: clamp(30px, 8vw, 60px); width: 65%; left: 17.5%; }
+
+            .next-page-button {
+                padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 20px);
+                font-size: clamp(0.6rem, 1.8vw, 0.8rem);
+                bottom: 15px;
+            }
+        }
+
+        .next-page-button.show {
             opacity: 1 !important;
             transform: translateY(0) !important;
             animation: buttonPulse 1.5s infinite;
-        }
-
-        @keyframes loveFloat {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.8; }
-            100% { transform: translateY(-200px) rotate(360deg); opacity: 0; }
         }
 
     </style>
@@ -358,16 +396,14 @@
                     message.style.color = '#fff';
                     message.style.padding = '20px 40px';
                     message.style.borderRadius = '15px';
-                    message.style.fontSize = '2rem';
-                    message.style.textAlign = 'center';
-                    message.style.zIndex = '1000';
-                    message.style.maxWidth = '80%';
-                    message.style.boxShadow = '0 0 30px var(--neon-pink)';
+                    message.style.fontSize = window.innerWidth <= 768 ? '1.5rem' : '2rem';
+                    message.style.padding = window.innerWidth <= 768 ? '15px 20px' : '20px 40px';
+                    message.style.maxWidth = window.innerWidth <= 768 ? '90%' : '80%';
                     document.body.appendChild(message);
 
                     // Funny birthday message for Nikitha
                     const messages = [
-                        "N - Never a dull moment with you! 🎉",
+                        "N - Natural! 🎉",
                         "I - Incredibly awesome, that's you! 😎",
                         "K - Kind-hearted and super cool! ❤️",
                         "I - Intelligent and inspiring! ✨",
@@ -385,7 +421,7 @@
                         if (currentMessage < messages.length) {
                             if (currentChar === 0) {
                                 if (currentMessage > 0) {
-                                    message.innerHTML += '<br><br>';
+                                    message.innerHTML = ''; // Clear previous message
                                 }
                             }
                             
@@ -399,21 +435,10 @@
                                 if (currentMessage < messages.length) {
                                     setTimeout(typeWriter, 1000); // Pause between messages
                                 } else {
-                                    // After all messages are shown, add a button to continue
-                                    const continueBtn = document.createElement('button');
-                                    continueBtn.textContent = 'Continue the Magic! 🎇';
-                                    continueBtn.style.marginTop = '20px';
-                                    continueBtn.style.padding = '10px 20px';
-                                    continueBtn.style.borderRadius = '20px';
-                                    continueBtn.style.background = 'linear-gradient(45deg, var(--neon-pink), var(--neon-blue))';
-                                    continueBtn.style.color = 'white';
-                                    continueBtn.style.border = 'none';
-                                    continueBtn.style.cursor = 'pointer';
-                                    continueBtn.style.fontSize = '1.2rem';
-                                    continueBtn.onclick = () => window.location.href = 'Final.html';
-                                    message.appendChild(document.createElement('br'));
-                                    message.appendChild(document.createElement('br'));
-                                    message.appendChild(continueBtn);
+                                    // After all messages, show the button
+                                    setTimeout(() => {
+                                        nextButton.classList.add('show');
+                                    }, 1000);
                                 }
                             }
                         }
