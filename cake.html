@@ -435,10 +435,10 @@
                                 if (currentMessage < messages.length) {
                                     setTimeout(typeWriter, 1000); // Pause between messages
                                 } else {
-                                    // After all messages, show the button
+                                    // After all messages, navigate to Final.html
                                     setTimeout(() => {
-                                        nextButton.classList.add('show');
-                                    }, 1000);
+                                        window.location.href = 'Final.html';
+                                    }, 2000); // 2 second delay after last message
                                 }
                             }
                         }
