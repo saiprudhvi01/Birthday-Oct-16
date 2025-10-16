@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magical Cake Celebration!</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <title>Magic Birthday Book</title>
     <style>
-        :root {
-            --neon-pink: #ff00ff;
-            --neon-blue: #00ffff;
-            --neon-purple: #bc13fe;
-            --space-black: #0a0a1a;
-            --star-white: rgba(255, 255, 255, 0.8);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -21,457 +13,392 @@
         }
 
         body {
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .star {
+            position: fixed; /* Use fixed to avoid layout interference */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+
+        .ballon {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            width: 15vw; /* Responsive width */
+            max-width: 120px;
+            filter: drop-shadow(0 0 15px #ff69b4);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .birthdayCard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .cardFront, .cardInside {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: linear-gradient(135deg, #fff5f5, #ffe3e3);
+            padding: 5vw;
+            border: 5px solid #ff6b6b;
+            box-shadow: inset 0 0 20px rgba(255,107,107,0.2);
+            overflow-y: auto; /* Allow scrolling if needed */
+        }
+
+        .cardFront {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, var(--space-black) 60%, #2a0a4a);
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            position: relative;
         }
 
-        .stars {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: -1;
+        .cardInside {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #fff5f5, #ffe3e3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2vw;
+            overflow: visible; /* Ensure content is not clipped */
         }
 
-        .star {
+        /* Book spine effect */
+        .cardFront::before {
+            content: '';
             position: absolute;
-            background: var(--star-white);
-            border-radius: 50%;
-            animation: twinkle 2s infinite;
+            left: 0;
+            top: 0;
+            width: 15px;
+            height: 100%;
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            box-shadow: 5px 0 15px rgba(255,107,107,0.3);
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .heading {
-            font-size: clamp(2rem, 8vw, 4rem);
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 2rem;
+        .front-text {
             text-align: center;
-            animation: titleFloat 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px var(--neon-purple));
-            position: relative;
             z-index: 2;
         }
 
-        @keyframes titleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .happy { font-size: clamp(1.5em, 4vw, 2.5em); }
+        .bday { 
+            font-size: clamp(2em, 6vw, 3.5em); 
+            animation: glow 2s ease-in-out infinite;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+        .toyou { font-size: clamp(1.2em, 3vw, 1.8em); }
 
-        .cake-container {
+        .plate {
             position: relative;
-            width: clamp(250px, 70vw, 350px);
-            height: clamp(250px, 70vw, 350px);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 0 30px rgba(255, 113, 182, 0.5));
-        }
-
-        .cake-container:hover {
-            transform: scale(1.05) rotate(-2deg);
+            margin: 30px 0;
         }
 
         .cake {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-        }
-
-        .layer {
-            position: absolute;
-            width: 100%;
-            border-radius: 15px;
-            box-shadow: 
-                0 0 30px var(--neon-pink),
-                inset 0 0 20px rgba(255, 255, 255, 0.2);
-            display: flex;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .layer-1 {
-            height: 100px;
-            bottom: 0;
-            background: linear-gradient(45deg, #ff00ff, #bc13fe);
-            z-index: 3;
-        }
-
-        .layer-2 {
-            height: 90px;
-            bottom: 90px;
-            width: 85%;
-            left: 7.5%;
-            background: linear-gradient(45deg, #bc13fe, #8a2be2);
-            z-index: 2;
-        }
-
-        .layer-3 {
-            height: 80px;
-            bottom: 170px;
-            width: 70%;
-            left: 15%;
-            background: linear-gradient(45deg, #8a2be2, #4b0082);
-            z-index: 1;
-        }
-
-        .frosting {
-            position: absolute;
-            width: 25px;
-            height: 35px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            top: -15px;
-            filter: drop-shadow(0 0 5px white);
-        }
-
-        .candle {
-            position: absolute;
-            width: 25px;
-            height: 80px;
-            background: linear-gradient(to right, #fff, #ffd1e3);
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
+            width: clamp(100px, 20vw, 150px);
+            height: clamp(50px, 10vw, 80px);
+            background: linear-gradient(#ff6b6b, #ff8e53);
             border-radius: 10px;
-            z-index: 10;
-            filter: drop-shadow(0 0 10px white);
+            position: relative;
+            box-shadow: 0 10px 20px rgba(255,107,107,0.3);
         }
 
         .flame {
-            position: absolute;
-            width: 25px;
+            width: 20px;
             height: 40px;
-            background: linear-gradient(to bottom, #ff9d00, #ff5e00);
-            border-radius: 50% 50% 20% 20%;
-            top: -35px;
-            animation: flameFloat 0.8s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px #ff9d00);
-        }
-
-        @keyframes flameFloat {
-            0%, 100% { transform: rotate(-2deg); }
-            50% { transform: rotate(2deg) scale(1.1); }
-        }
-
-        .glow-particle {
+            background: #ffdd59;
+            border-radius: 50% 50% 35% 35%;
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.6);
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.1s infinite;
+        }
+
+        .wishes {
+            color: #2c3e50;
+            font-size: clamp(0.8em, 2.5vw, 1.1em);
+            line-height: 1.6;
+            padding: 3vw;
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bdyboy {
+            width: clamp(120px, 25vw, 180px);
             border-radius: 50%;
-            filter: blur(3px);
-            animation: particleFloat 3s linear infinite;
+            border: 5px solid #ff6b6b;
+            margin: 3vw auto;
+            transition: transform 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        @keyframes particleFloat {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
+        .bdyboy:hover {
+            transform: scale(1.05) rotate(5deg);
         }
 
-        .next-page-button {
-            position: fixed;
-            bottom: 40px;
-            padding: clamp(10px, 3vw, 15px) clamp(20px, 5vw, 40px);
-            font-size: clamp(0.8rem, 2.5vw, 1.2rem);
-            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
-            border: none;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.3s ease;
-            box-shadow: 
-                0 0 25px var(--neon-pink),
-                0 0 50px var(--neon-blue);
-            z-index: 1000;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .next-page-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 0 35px var(--neon-pink),
-                0 0 70px var(--neon-blue);
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
-        }
-
-        .neon-border {
+        .confetti {
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 2px solid var(--neon-pink);
-            border-radius: 15px;
-            box-shadow: 
-                inset 0 0 15px var(--neon-pink),
-                0 0 30px var(--neon-pink);
-            animation: borderPulse 2s infinite;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
 
-        @keyframes borderPulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 0.3; }
+        .cat {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 15vw; /* Responsive width */
+            max-width: 120px;
+            filter: drop-shadow(0 0 10px #fff);
+            animation: float 3s ease-in-out infinite;
         }
 
+        .birthdayCard {
+            position: relative;
+            width: 90vw;
+            max-width: 400px;
+            max-height: 90vh; /* Ensure it fits in viewport */
+            height: auto;
+            aspect-ratio: 4/5.5;
+            transform-style: preserve-3d;
+            transition: all 0.8s ease;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden; /* Prevent content overflow */
+        }
 
+        #playBtn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 2vw;
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            background: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px #ff6b6b); }
+            50% { filter: drop-shadow(0 0 20px #ff8e53); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) rotate(2deg); }
+            50% { transform: translateX(-50%) rotate(-2deg); }
+            100% { transform: translateX(-50%) rotate(2deg); }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 0.4; }
+            100% { opacity: 0.8; }
+        }
+
+        /* Page lines effect */
+        .cardInside::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30px;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                #ff6b6b 0px,
+                #ff6b6b 5px,
+                transparent 5px,
+                transparent 10px
+            );
+        }
+
+        .name {
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
 
         /* Mobile responsiveness */
         @media (max-width: 768px) {
-            .heading {
-                font-size: clamp(1.5rem, 6vw, 2.5rem);
-                margin-bottom: 1.5rem;
+            .birthdayCard {
+                width: 90vw;
+                max-width: 350px;
+                margin: 20px auto;
             }
 
-            .cake-container {
-                width: clamp(200px, 60vw, 300px);
-                height: clamp(200px, 60vw, 300px);
+            .happy { font-size: clamp(1.2em, 5vw, 2em); }
+            .bday { font-size: clamp(1.8em, 7vw, 2.8em); }
+            .toyou { font-size: clamp(1em, 4vw, 1.5em); }
+
+            .cake {
+                width: clamp(80px, 18vw, 120px);
+                height: clamp(40px, 9vw, 60px);
             }
 
-            .layer-1 { height: clamp(60px, 15vw, 100px); }
-            .layer-2 { height: clamp(50px, 12vw, 90px); width: clamp(60%, 70vw, 85%); left: clamp(5%, 7.5vw, 7.5%); }
-            .layer-3 { height: clamp(40px, 10vw, 80px); width: clamp(50%, 60vw, 70%); left: clamp(10%, 15vw, 15%); }
+            .wishes {
+                font-size: clamp(0.7em, 2vw, 0.9em);
+                padding: 2vw;
+            }
 
-            .next-page-button {
-                padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 25px);
+            .bdyboy {
+                width: clamp(100px, 20vw, 140px);
+            }
+
+            .ballon, .cat {
+                width: clamp(80px, 12vw, 100px);
+            }
+
+            #playBtn {
+                padding: 2vw;
                 font-size: clamp(0.7rem, 2vw, 0.9rem);
-                bottom: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .heading {
-                font-size: clamp(1.2rem, 5vw, 2rem);
-                margin-bottom: 1rem;
+            .birthdayCard {
+                width: 95vw;
+                max-width: 300px;
             }
 
-            .cake-container {
-                width: clamp(180px, 50vw, 250px);
-                height: clamp(180px, 50vw, 250px);
+            .happy { font-size: clamp(1em, 4vw, 1.5em); }
+            .bday { font-size: clamp(1.5em, 6vw, 2em); }
+            .toyou { font-size: clamp(0.8em, 3vw, 1.2em); }
+
+            .cake {
+                width: clamp(60px, 15vw, 100px);
+                height: clamp(30px, 7vw, 50px);
             }
 
-            .layer-1 { height: clamp(50px, 12vw, 80px); }
-            .layer-2 { height: clamp(40px, 10vw, 70px); width: 80%; left: 10%; }
-            .layer-3 { height: clamp(30px, 8vw, 60px); width: 65%; left: 17.5%; }
+            .wishes {
+                font-size: clamp(0.6em, 1.8vw, 0.8em);
+                padding: 1.5vw;
+            }
 
-            .next-page-button {
-                padding: clamp(6px, 1.5vw, 10px) clamp(12px, 3vw, 20px);
-                font-size: clamp(0.6rem, 1.8vw, 0.8rem);
-                bottom: 15px;
+            .bdyboy {
+                width: clamp(80px, 18vw, 120px);
+            }
+
+            .ballon, .cat {
+                width: clamp(60px, 10vw, 80px);
+            }
+
+            #playBtn {
+                padding: 1.5vw;
+                font-size: clamp(0.6rem, 1.5vw, 0.8rem);
             }
         }
 
-        .next-page-button.show {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-            animation: buttonPulse 1.5s infinite;
+        .inside-text {
+            text-align: center;
+            margin-bottom: 10px;
         }
-
     </style>
 </head>
+
 <body>
-    <div class="stars"></div>
-    <h1 class="heading">Magical Cake Time! ✨</h1>
-    <div class="cake-container">
-        <div class="cake">
-            <div class="neon-border"></div>
-            <div class="layer layer-1">
-                <div class="frosting"></div>
-                <div class="frosting" style="left: 50px"></div>
-                <div class="frosting" style="right: 50px"></div>
-            </div>
-            <div class="layer layer-2">
-                <div class="frosting"></div>
-                <div class="frosting" style="left: 45px"></div>
-                <div class="frosting" style="right: 45px"></div>
-            </div>
-            <div class="layer layer-3">
-                <div class="frosting"></div>
-                <div class="frosting" style="left: 40px"></div>
-                <div class="frosting" style="right: 40px"></div>
-                <div class="candle">
+    <img src="ZUiY.gif" alt="stars" class="star">
+    <img src="5l03.gif" alt="ballon" class="ballon">
+    <div class="container">
+        <div class="birthdayCard">
+            <div class="cardFront">
+                <div class="front-text">
+                    <h3 class="happy">HAPPY</h3>
+                    <h2 class="bday">BIRTHDAY</h2>
+                    <h3 class="toyou">to you!</h3>
+                </div>
+                <div class="plate">
+                    <div class="cake"></div>
                     <div class="flame"></div>
+                </div>
+            </div>
+            <div class="cardInside">
+                <div class="img">
+                    <img src="nikitha.jpeg" alt="Nikitha" class="bdyboy">
+                    <img src="6ob.gif" alt="confetti" class="confetti">
+                </div>
+                <div class="inside-text">
+                    <h3 class="happy">HAPPY</h3>
+                    <h2 class="bday">BIRTHDAY</h2>
+                    <h3 class="toyou">to you!</h3>
+                </div>
+                <div class="wishes">
+                    <p>Dear Nikitha, ❤️</p>
+                    <p>Happy Birthday!! 🎉🥳 I hope your day is filled with endless love and laughter! May all your wishes come true and your heart always shine with happiness. 💖✨</p>
+                    <p class="name">Best wishes,<br>Sai Prudhvi</p>
+                    <p class="name"></p>
                 </div>
             </div>
         </div>
     </div>
-    <button class="next-page-button">Begin Magic →</button>
+    <img src="cat.gif" alt="cat" class="cat">
+    <button id="playBtn" style="position: fixed; bottom: 10px; right: 10px; padding: 10px; background: #ff69b4; color: white; border: none; border-radius: 5px; cursor: pointer;">Play Music</button>
+
 
     <script>
-        // Create stars background
-        function createStars() {
-            const container = document.querySelector('.stars');
-            for (let i = 0; i < 200; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = `${Math.random() * 3}px`;
-                star.style.height = star.style.width;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 2}s`;
-                container.appendChild(star);
-            }
-        }
+        // Play background music immediately
+        const audio = new Audio(encodeURI('[iSongs.info] 02 - Intro Of Nikki.mp3'));
+        audio.loop = true;
+        audio.volume = 0.5;
+        audio.muted = true; // Start muted to allow autoplay
 
-        // Create floating particles
-        function createParticles() {
-            const flame = document.querySelector('.flame');
-            setInterval(() => {
-                const particle = document.createElement('div');
-                particle.className = 'glow-particle';
-                particle.style.left = `${Math.random() * 20 - 10}px`;
-                flame.appendChild(particle);
-                setTimeout(() => particle.remove(), 3000);
-            }, 300);
-        }
-
-        // Create floating love emojis immediately
-        function createLoveEmojis() {
-            for (let i = 0; i < 20; i++) {
-                const emoji = document.createElement('div');
-                emoji.innerHTML = '❤️';
-                emoji.style.position = 'absolute';
-                emoji.style.fontSize = '2rem';
-                emoji.style.left = `${Math.random() * 100}%`;
-                emoji.style.top = `${Math.random() * 100}%`;
-                emoji.style.zIndex = '1';
-                emoji.style.animation = `loveFloat ${Math.random() * 3 + 2}s linear infinite`;
-                document.body.appendChild(emoji);
-
-                // Remove after animation
-                setTimeout(() => emoji.remove(), 5000);
-            }
-        }
-
-        createLoveEmojis();
-
-
-         // अपडेट किया हुआ JavaScript
-         document.addEventListener('DOMContentLoaded', () => {
-            const cake = document.querySelector('.cake-container');
-            const nextButton = document.querySelector('.next-page-button');
-            let celebrationStarted = false;
-
-            // केक पर क्लिक करने का इवेंट
-            cake.addEventListener('click', () => {
-                if(celebrationStarted) return;
-                celebrationStarted = true;
-
-                // बटन दिखाएं
-                setTimeout(() => {
-                    nextButton.classList.add('show');
-                }, 2000);
-
-                // एनिमेशन लॉजिक यहाँ जोड़ें
-            });
-
-            // Button click handler
-            nextButton.addEventListener('click', () => {
-                // Create message element if it doesn't exist
-                let message = document.querySelector('.birthday-message');
-                if (!message) {
-                    message = document.createElement('div');
-                    message.className = 'birthday-message';
-                    message.style.position = 'fixed';
-                    message.style.top = '50%';
-                    message.style.left = '50%';
-                    message.style.transform = 'translate(-50%, -50%)';
-                    message.style.background = 'rgba(0, 0, 0, 0.8)';
-                    message.style.color = '#fff';
-                    message.style.padding = '20px 40px';
-                    message.style.borderRadius = '15px';
-                    message.style.fontSize = window.innerWidth <= 768 ? '1.5rem' : '2rem';
-                    message.style.padding = window.innerWidth <= 768 ? '15px 20px' : '20px 40px';
-                    message.style.maxWidth = window.innerWidth <= 768 ? '90%' : '80%';
-                    document.body.appendChild(message);
-
-                    // Funny birthday message for Nikitha
-                    const messages = [
-                        "N - Natural! 🎉",
-                        "I - Incredibly awesome, that's you! 😎",
-                        "K - Kind-hearted and super cool! ❤️",
-                        "I - Intelligent and inspiring! ✨",
-                        "T - Terrific in every way! 🌟",
-                        "H - Hilarious and full of joy! 😂",
-                        "A - Absolutely amazing friend! 🎊",
-                        "\n\nHappy Birthday Nikitha! 🎂🎈"
-                    ];
-
-                    let currentMessage = 0;
-                    let currentChar = 0;
-                    let typingSpeed = 50; // milliseconds per character
-                    
-                    function typeWriter() {
-                        if (currentMessage < messages.length) {
-                            if (currentChar === 0) {
-                                if (currentMessage > 0) {
-                                    message.innerHTML += '<br><br>';
-                                }
-                            }
-                            
-                            if (currentChar < messages[currentMessage].length) {
-                                message.innerHTML += messages[currentMessage].charAt(currentChar);
-                                currentChar++;
-                                setTimeout(typeWriter, typingSpeed);
-                            } else {
-                                currentMessage++;
-                                currentChar = 0;
-                                if (currentMessage < messages.length) {
-                                    setTimeout(typeWriter, 1000); // Pause between messages
-                                } else {
-                                    // After all messages are shown, add a button to continue
-                                    const continueBtn = document.createElement('button');
-                                    continueBtn.textContent = 'Continue the Magic! 🎇';
-                                    continueBtn.style.marginTop = '20px';
-                                    continueBtn.style.padding = '10px 20px';
-                                    continueBtn.style.borderRadius = '20px';
-                                    continueBtn.style.background = 'linear-gradient(45deg, var(--neon-pink), var(--neon-blue))';
-                                    continueBtn.style.color = 'white';
-                                    continueBtn.style.border = 'none';
-                                    continueBtn.style.cursor = 'pointer';
-                                    continueBtn.style.fontSize = '1.2rem';
-                                    continueBtn.onclick = () => window.location.href = 'Final.html';
-                                    message.appendChild(document.createElement('br'));
-                                    message.appendChild(document.createElement('br'));
-                                    message.appendChild(continueBtn);
-                                }
-                            }
-                        }
-                    }
-                    
-                    typeWriter();
-                }
-            });
-        });
-
-        // Continue background music if it was playing
-        if (sessionStorage.getItem('musicPlaying') === 'true') {
-            const audio = new Audio(encodeURI('[iSongs.info] 02 - Intro Of Nikki.mp3'));
-            audio.loop = true;
-            audio.volume = 0.5;
-            audio.muted = true;
+        document.addEventListener('DOMContentLoaded', () => {
             audio.play().then(() => {
+                // Unmute after a short delay to enable audio
                 setTimeout(() => {
                     audio.muted = false;
                 }, 1000);
-            }).catch(e => console.log('Music play failed:', e));
-        }
+            }).catch(e => {
+                console.log('Autoplay blocked:', e);
+                // Fallback: Play on first interaction
+                const playOnInteraction = () => {
+                    audio.play().then(() => {
+                        audio.muted = false;
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('keydown', playOnInteraction);
+                    }).catch(err => console.log('Play failed:', err));
+                };
+                document.addEventListener('click', playOnInteraction);
+                document.addEventListener('keydown', playOnInteraction);
+            });
+        });
+
+        // Flip card on click for mobile
+        document.querySelector('.birthdayCard').addEventListener('click', () => {
+            const card = document.querySelector('.birthdayCard');
+            card.classList.toggle('flipped');
+        });
     </script>
 </body>
+
 </html>
