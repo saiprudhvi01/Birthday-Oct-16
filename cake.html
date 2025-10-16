@@ -396,16 +396,14 @@
                     message.style.color = '#fff';
                     message.style.padding = '20px 40px';
                     message.style.borderRadius = '15px';
-                    message.style.fontSize = '2rem';
-                    message.style.textAlign = 'center';
-                    message.style.zIndex = '1000';
-                    message.style.maxWidth = '80%';
-                    message.style.boxShadow = '0 0 30px var(--neon-pink)';
+                    message.style.fontSize = window.innerWidth <= 768 ? '1.5rem' : '2rem';
+                    message.style.padding = window.innerWidth <= 768 ? '15px 20px' : '20px 40px';
+                    message.style.maxWidth = window.innerWidth <= 768 ? '90%' : '80%';
                     document.body.appendChild(message);
 
                     // Funny birthday message for Nikitha
                     const messages = [
-                        "N - Never a dull moment with you! 🎉",
+                        "N - Natural! 🎉",
                         "I - Incredibly awesome, that's you! 😎",
                         "K - Kind-hearted and super cool! ❤️",
                         "I - Intelligent and inspiring! ✨",
