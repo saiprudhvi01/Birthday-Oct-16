@@ -46,8 +46,10 @@
 
         .birthdayCard {
             position: relative;
-            width: 400px;
-            height: 550px;
+            width: 90vw;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 4/6; /* Increased height ratio for more space */
             transform-style: preserve-3d;
             transition: all 0.8s ease;
             cursor: pointer;
@@ -300,9 +302,11 @@
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .birthdayCard {
-        width: 90%;
+        width: 90vw;
+        max-width: 350px;
         height: auto;
-        margin-top: 20px;
+        aspect-ratio: 4/6;
+        margin: 20px auto;
     }
 
     .happy { font-size: 1.5em; }
@@ -340,10 +344,11 @@
 
 @media (max-width: 480px) {
     .birthdayCard {
-        width: 95%;
+        width: 95vw;
+        max-width: 300px;
         height: auto;
+        aspect-ratio: 4/6;
     }
-
     .happy { font-size: 1.2em; }
     .bday { font-size: 1.5em; }
     .toyou { font-size: 1em; }
